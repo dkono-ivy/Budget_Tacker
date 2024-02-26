@@ -1,0 +1,40 @@
+import tkinter as tk
+from tkinter import messagebox
+from validation import validate_expense
+from data_management import add_expense
+
+
+def open_details_window():
+    def submit_form():
+        name = expense_name_var.get()
+        amount = expense_amount_var.get()
+        errors = validate_expense(name, amount)
+        if errors:
+            messagebox.showerror("Validation Error", "\n".join(errors))
+            return
+        add_expense(name, float(amount))
+        messagebox.showinfo("Success", "Expense added successfully.")
+        details_window.destroy()  
+
+    details_window = tk.Toplevel(root)
+    details_window.title('Add New Expense')
+
+    expense_name_var = tk.StringVar()
+    expense_amount_var = tk.StringVar()
+
+    tk.Label(details_window, text="Expense Name:").pack()
+    tk.Entry(details_window, textvariable=expense_name_var).pack()
+
+    tk.Label(details_window, text="Amount:").pack()
+    tk.Entry(details_window, textvariable=expense_amount_var).pack()
+
+    tk.Button(details_window, text="Submit", command=submit_form).pack()
+
+# Main window setup
+root = tk.Tk()
+root.title('Personal Budget Tracker')
+
+tk.Button(root, text="Add Expense", command=open_details_window).pack()
+tk.Button(root, text="Exit", command=root.quit).pack()
+
+root.mainloop()
